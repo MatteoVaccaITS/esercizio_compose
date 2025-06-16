@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpass
+      POSTGRES_DB: mydatabase
+    ports:
+    - "5432:5432"
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+
+  dbgate:
+    image: dbgate/dbgate 
+    container_name: dbgate-ui
+    ports:
+      - "3000:3000"
+    environment:
+      CONNECTIONS: con1
+      LABEL_con1: "Postgres DB"
+      SERVER_con1: postgres
+      USER_con1: admin
+      PASSWORD_con1: adminpass
+      PORT_con1: 5432
+      ENGINE_con1: postgres@dbgate-plugin-postgres
+
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:   
